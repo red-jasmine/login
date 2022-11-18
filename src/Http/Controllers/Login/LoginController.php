@@ -12,4 +12,11 @@ trait LoginController
 
     }
 
+
+    public function sms(Request $request)
+    {
+        // TODO 短信登录
+
+    }
+
 }
