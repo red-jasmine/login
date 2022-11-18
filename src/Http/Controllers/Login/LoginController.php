@@ -9,6 +9,7 @@ trait LoginController
 
     public function password(Request $request)
     {
+        // TODO 密码登录
 
     }
 
