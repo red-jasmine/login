@@ -1,6 +1,6 @@
 <?php
 
-namespace RedJasmine\Login\Http\Controllers;
+namespace RedJasmine\Login\Http\Controllers\Login;
 
 use Illuminate\Http\Request;
 
