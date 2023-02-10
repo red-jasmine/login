@@ -1,6 +1,6 @@
 <?php
 
-namespace RedJasmine\Login\Http\Controllers\Buyer;
+namespace RedJasmine\Login\Http\Controllers\User;
 
 use App\Http\Controllers\Controller as BaseController;
 
