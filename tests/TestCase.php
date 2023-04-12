@@ -3,10 +3,9 @@
 namespace RedJasmine\Login\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Orchestra\Testbench\TestCase as Orchestra;
 use RedJasmine\Login\LoginServiceProvider;
 
-class TestCase extends Orchestra
+class TestCase extends \Orchestra\Testbench\TestCase
 {
     protected function setUp(): void
     {

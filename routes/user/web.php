@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use RedJasmine\Support\Helpers\DomainRoute;
+use RedJasmine\MallCore\Helpers\DomainRoute;
 
 Route::group([
                  'domain'     => DomainRoute::domain('login'),

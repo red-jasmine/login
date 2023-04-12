@@ -11,6 +11,16 @@ use RedJasmine\User\Models\User;
 
 class LoginController extends Controller
 {
+
+    /**
+     * @param Request $request
+     * @return void
+     */
+    public function sms(Request $request)
+    {
+
+    }
+
     public function password(Request $request) : JsonResponse
     {
 

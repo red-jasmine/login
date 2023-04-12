@@ -6,28 +6,34 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Support\Facades\Auth;
-use Liushoukun\LaravelProjectTools\Contracts\User;
 use RedJasmine\Login\Events\UserLoginEvent;
+use RedJasmine\Support\Contracts\UserInterface;
 
 class LoginService
 {
 
+    public function __construct(protected string $guard = 'user')
+    {
+    }
 
-    protected string $guard = 'user';
-
-    public function sms(array $credentials = [], $remember = false)
+    public function sms(array $credentials = [], $remember = false) : void
     {
 
     }
 
-    public function password(array $credentials = [], $remember = false)
+    public function password(array $credentials = [], $remember = false) : void
     {
         if ($this->guard()->attempt($credentials, $remember)) {
             $this->responseData();
         }
     }
 
-    public function login(User&Authenticatable $user) : array
+    /**
+     * 手动登录
+     * @param Authenticatable&UserInterface $user
+     * @return array
+     */
+    public function login(UserInterface&Authenticatable $user) : array
     {
         $this->guard()->login($user);
 
@@ -51,3 +57,5 @@ class LoginService
     }
 
 }
+
+
