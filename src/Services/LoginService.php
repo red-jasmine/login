@@ -7,6 +7,7 @@ use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Support\Facades\Auth;
 use RedJasmine\Login\Events\UserLoginEvent;
+use RedJasmine\Login\Exceptions\LoginException;
 use RedJasmine\Support\Contracts\UserInterface;
 
 class LoginService
@@ -21,11 +22,19 @@ class LoginService
 
     }
 
-    public function password(array $credentials = [], $remember = false) : void
+    /**
+     * 密码登入
+     * @param array $credentials
+     * @param $remember
+     * @return array
+     * @throws LoginException
+     */
+    public function password(array $credentials = [], $remember = true) : array
     {
-        if ($this->guard()->attempt($credentials, $remember)) {
-            $this->responseData();
+        if ($this->guard()->attempt($credentials, true)) {
+            return $this->responseData();
         }
+        throw new LoginException('账号密码错误', LoginException::LOGIN_FIAL);
     }
 
     /**
@@ -46,6 +55,10 @@ class LoginService
     }
 
 
+    /**
+     * 登入成功响应参数
+     * @return array
+     */
     public function responseData() : array
     {
         return [

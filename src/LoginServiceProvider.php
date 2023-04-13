@@ -16,8 +16,7 @@ class LoginServiceProvider extends ServiceProvider
         // $this->loadTranslationsFrom(__DIR__.'/../lang', 'red-jasmine.login');
         // $this->loadViewsFrom(__DIR__.'/../resources/views', 'red-jasmine.login');
         // $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-         $this->loadRoutesFrom(__DIR__.'/../routes/user/api.php');
-         $this->loadRoutesFrom(__DIR__.'/../routes/user/web.php');
+
 
         // Publishing is only necessary when using the CLI.
         if ($this->app->runningInConsole()) {
