@@ -20,6 +20,8 @@ class Routes
 
 
             Route::post('password', [ LoginController::class, 'password' ])->name('user.api.login.password');
+            Route::post('sms', [ LoginController::class, 'sms' ])->name('user.api.login.sms');
+            Route::post('captcha', [ LoginController::class, 'captcha' ])->name('user.api.login.captcha');
 
 
             if ($routes) {

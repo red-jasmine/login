@@ -4,28 +4,38 @@ namespace RedJasmine\Login\Http\Controllers\User\Api;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
+use RedJasmine\Captcha\Exceptions\CaptchaException;
 use RedJasmine\Login\Exceptions\LoginException;
 use RedJasmine\Login\Services\LoginService;
-use RedJasmine\User\Models\User;
 
 class LoginController extends Controller
 {
 
 
-    public function captcha(Request $request)
+    /**
+     * 发送验证码
+     * @param Request $request
+     * @return JsonResponse
+     * @throws CaptchaException
+     */
+    public function captcha(Request $request) : JsonResponse
     {
-
+        // TODO  需要通过图形验证码
+        $service = new LoginService('api');
+        $captcha = $service->captcha([ 'username' => $request->input('username') ]);
+        return self::success();
     }
 
     /**
      * @param Request $request
-     * @return void
+     * @return JsonResponse
+     * @throws CaptchaException
      */
-    public function sms(Request $request)
+    public function sms(Request $request) : JsonResponse
     {
-
+        $service = new LoginService('api');
+        $tokens  = $service->sms([ 'username' => $request->input('username'), 'code' => $request->input('code') ]);
+        return self::success($tokens);
     }
 
     /**

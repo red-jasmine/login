@@ -6,6 +6,10 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Support\Facades\Auth;
+use RedJasmine\Captcha\Enums\NotifiableType;
+use RedJasmine\Captcha\Exceptions\CaptchaException;
+use RedJasmine\Captcha\Facades\Captcha;
+use RedJasmine\Captcha\Models\CaptchaCode;
 use RedJasmine\Login\Events\UserLoginEvent;
 use RedJasmine\Login\Exceptions\LoginException;
 use RedJasmine\Support\Contracts\UserInterface;
@@ -13,6 +17,9 @@ use RedJasmine\User\Enums\UserStatus;
 
 class LoginService
 {
+
+
+    public const  CAPTCHA_TYPE = 'LOGIN';
 
     public function __construct(protected string $guard = 'user')
     {
@@ -23,15 +30,68 @@ class LoginService
      */
     public function validateStatus() : void
     {
-        if(method_exists($this->guard()->user(),'isAllowLogin')){
+        if (method_exists($this->guard()->user(), 'isAllowLogin')) {
             $this->guard()->user()->isAllowLogin();
         }
 
     }
 
-    public function sms(array $credentials = [], $remember = false) : void
+    /**
+     * @param array $credentials
+     * @param bool $remember
+     * @return CaptchaCode
+     * @throws CaptchaException
+     */
+    public function captcha(array $credentials = [], bool $remember = false) : CaptchaCode
     {
+        $username = $credentials['username'];
+        unset($credentials['username']);
+        $field = ($this->validateChinaPhoneNumber($username) ? 'mobile' : 'email');
+        $user  = $this->guard()->getProvider()->retrieveByCredentials([ $field => $username ]);
+        $this->guard()->login($user);
+        $this->validateStatus();
+        // 发送验证码
 
+        return Captcha::captcha(
+            [
+                'notifiableType' => NotifiableType::from($field),
+                'app'            => 'app',
+                'notifiable'     => $user->{$field},
+                'type'           => self::CAPTCHA_TYPE,
+                'expMinutes'     => 10
+            ]
+        );
+
+    }
+
+    /**
+     * 短信登录
+     * @param array $credentials
+     * @param bool $remember
+     * @return array
+     * @throws CaptchaException
+     */
+    public function sms(array $credentials = [], bool $remember = false) : array
+    {
+        $username = $credentials['username'];
+        unset($credentials['username']);
+
+        $field = ($this->validateChinaPhoneNumber($username) ? 'mobile' : 'email');
+
+        Captcha::check(
+            [
+                'notifiableType' => NotifiableType::from($field),
+                'app'            => 'app',
+                'notifiable'     => $username,
+                'type'           => self::CAPTCHA_TYPE,
+                'code'           => $credentials['code'] ?? ''
+            ]
+        );
+
+        $user = $this->guard()->getProvider()->retrieveByCredentials([ $field => $username ]);
+        $this->guard()->login($user);
+        $this->validateStatus();
+        return $this->responseData();
     }
 
 
